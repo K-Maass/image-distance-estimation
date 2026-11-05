@@ -1,0 +1,9 @@
+# Active compliant pipeline dependencies.
+# Historical archive scripts may require extra non-compliant packages that are
+# intentionally not installed by default.
+
+numpy>=1.26,<3
+pandas>=2.2,<3
+Pillow>=10,<12
+PyYAML>=6,<7
+scikit-learn>=1.5,<2

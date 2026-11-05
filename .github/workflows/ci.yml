@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  synthetic-checks:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - name: Install active dependencies
+        run: python -m pip install -r requirements.txt -c requirements-lock.txt
+      - name: Check entrypoint import without training or competition data
+        run: python -c "import main; assert callable(main.main)"
+      - name: Run synthetic helper tests
+        run: python -m unittest discover -s tests -v
+      - name: Reject executed notebook outputs and identity metadata
+        run: python scripts/check_notebooks.py
